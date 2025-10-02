@@ -1,2 +1,2 @@
-from docker.io/hifigraz/code_server_python:latest
+from docker.io/hifigraz/code_server_base:latest
 copy root /
