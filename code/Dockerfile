@@ -1,2 +1,2 @@
-  from docker.io/hifigraz/code_server_fastapi:latest
-  copy root /
+from docker.io/hifigraz/code_server_python:latest
+copy root /
