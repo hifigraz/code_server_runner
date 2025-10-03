@@ -1,1 +1,1 @@
-*.sh binary
+./api/run.sh binary
