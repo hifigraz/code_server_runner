@@ -1,14 +1,15 @@
 #!/usr/bin/env sh
 
-echo Installing package in VENV
-
-. /config/venv/bin activate
-
-while true; do
-  echo trying to install package
-  pip install -e .[lint|test] && break
-  sleep 10
-  echo failed, retrying
-done
-
+if [ "$(id -u)" -eq 1000 ]; then
+  echo Installing package in VENV
+  . /config/venv/bin activate
+  while true; do
+    echo trying to install package
+    pip install -e .[lint,test] && break
+    sleep 10
+    echo failed, retrying
+  done
+else 
+  sudo -u abc $0 $*
+fi
 
