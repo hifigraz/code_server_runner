@@ -5,7 +5,7 @@ if [ "$(id -u)" -eq 1000 ]; then
   . /config/venv/bin activate
   while true; do
     echo trying to install package
-    pip install -e .[lint,test] && break
+    /config/venv/bin/pip install -e .[lint,test] && break
     sleep 10
     echo failed, retrying
   done
