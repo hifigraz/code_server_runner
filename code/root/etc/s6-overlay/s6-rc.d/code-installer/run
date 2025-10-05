@@ -3,7 +3,7 @@
 echo run CALLED
 
 while true; do
-  pip install -e . && break
+  pip install -e .[lint|test] && break
   sleep 10
 done
 chmod -R a+rwX *egg-info
