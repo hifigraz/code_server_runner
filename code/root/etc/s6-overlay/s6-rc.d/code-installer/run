@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 if [ "$(id -u)" -eq 1000 ]; then
+  echo USER OK
   echo Installing package in VENV
   . /config/venv/bin activate
   while true; do
@@ -10,6 +11,7 @@ if [ "$(id -u)" -eq 1000 ]; then
     echo failed, retrying
   done
 else 
+  echo switching USER
   sudo -u abc $0 $*
 fi
 
