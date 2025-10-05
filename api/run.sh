@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 running = true
-trap SIGTERM; running=false
+trap SIGTERM running=false
 
 echo running api
 while [ ${running} && ! -e pyproject.toml ]; do
