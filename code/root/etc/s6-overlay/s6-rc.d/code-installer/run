@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 
-echo run CALLED
+echo Installing package in VENV
+
+. /config/venv/bin activate
 
 while true; do
+  echo trying to install package
   pip install -e .[lint|test] && break
   sleep 10
+  echo failed, retrying
 done
-chmod -R a+rwX *egg-info
-[ -e .venv ] || ln -s ../venv .venv
 
 
