@@ -9,12 +9,12 @@ stop_server() {
 trap SIGTERM stop_server 
 
 echo running api
-while [ [ "${running}" -ne "0" ] && [ ! -e "pyproject.toml" ] ]; do
+while [ "${running}" -ne "0" ] && [ ! -e "pyproject.toml" ]; do
   echo waiting for project
   sleep 5
 done
 
-if [ [ "${running}" -ne "0" ] && [ -e "pyproject.toml" ] ]; then
+if [ "${running}" -ne "0" ] && [ -e "pyproject.toml" ]; then
   echo installing package
   pip install .
   chmod -R a+rwX *egg-info
