@@ -13,3 +13,5 @@ echo DONE INSTALLING PLUGINS
 
 chown -R root:root /config/extensions/extensions.json
 chmod 644 /config/extensions/extensions.json
+
+

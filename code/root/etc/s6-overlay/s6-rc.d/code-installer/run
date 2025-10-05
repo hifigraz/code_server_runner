@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+echo run CALLED
+
+while true; do
+  pip install -e . && break
+  sleep 10
+done
+chmod -R a+rwX *egg-info
+[ -e .venv ] || ln -s ../venv .venv
+
+
