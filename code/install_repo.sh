@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 usage() {
-  $(basename $0) >>cloneable repo address<<
+  echo "$(basename $0) >>cloneable repo address<<"
   exit 1
 }
 
