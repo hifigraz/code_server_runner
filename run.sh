@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+cd $(dirname $0)
 
 fail() {
   exit_code=$1
@@ -7,68 +8,83 @@ fail() {
   exit ${exit_code} 
 }
 
-cd $(dirname $0)
+stop_container() {
+  echo STOPPING CONTAINER
+  docker compose down
+}
 
-trap TERM docker compose down
+start_container() {
+  echo STARTING CONTAINER
+  docker compose up --build -d
+}
+
+trap stop_container SIGTERM SIGINT
 
 current_branch=$(git branch --show-current)
 branch="$1"
-
 [ -z "${branch}" ] && branch=${current_branch}
 
-echo Branch is ${branch}
-
 workspace=workspace_${branch}
+
+echo Current Branch is: ${current_branchbranch}
+echo Desired Branch is: ${branch}
+echo Workspace is:      ${workspace}
 
 [ -d "${workspace}" ] || fail 2 workspace ${workspace} does not exist.
 
 if [ "${current_branch}" == "${branch}" ]; then
-  echo Already on branch, not restarting
+  echo Already on branch, skipping restart
 else
-  echo Stopping to switch branches
-  docker compose down
+  stop_container
 fi
 
 git checkout ${branch} || fail 3 branch checkout ${branch} failed.
-
-unlink ./workspace
-
-ln -s ${workspace} workspace
-
-docker compose up --build -d
-
 url=$(cat url.txt)
-
 [ -z ${url} ] && fail 4 no url specified
 
-echo Try opening url: ${url}
+unlink ./workspace
+ln -s ${workspace} workspace
 
+start_container
+
+user_data_dir="/tmp/$(id -u)/container/"
+mkdir -p ${user_data_dir}
+chmod 700 ${user_data_dir}
+
+for dir in ${user_data_dir}/*/; do
+  echo checking user dir ${dir} 
+  old_pid_file=${dir}/pid
+  if [ -e ${old_pid_file} ] ; then
+    old_pid=$(cat ${old_pid_file})
+    Checking PID ${old_pid}
+    ps ${old_pid} | grep chromium && kill ${old_pid}
+  else
+    echo no old pid file found
+  fi
+  echo cleaning dir
+  [ -d ${dir} ] && rm -rf ${dir}
+done
+
+
+echo Try opening url: ${url}
 while ( ! curl ${url} || curl ${url} | grep 404 ); do
   sleep 1
   echo -n .
 done
 
-user_data_dir=/tmp/$(id -u)/
-pid_file=${user_data_dir}/pid
-chromium_data_dir=${user_data_dir}/$(uuidgen)
 
-echo chromedir ${chromium_data_dir}
-echo pid file  ${pid_file}
+chromium_data_dir="${user_data_dir}$(uuidgen)/"
+pid_file="${chromium_data_dir}pid"
+echo chromedir "${chromium_data_dir}"
+echo pid file  "${pid_file}"
+mkdir -p ${chromium_data_dir}
 
-for dir in ${user_data_dir}/*/; do
-  [ -d ${dir} ] && echo rm -rf ${dir}
-done
-if [ -e "${pid_file}" ] && ps $(cat $pid_file); then
-  kill $(cat ${pid_file})
-fi
+echo chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
+chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
+chromium_pid=$!
 
-mkdir -p ${user_data_dir}
-chmod 700 ${user_data_dir}
-
-echo chromium --user-data-dir=${chromium_data_dir} --app=${url} >/dev/null 2>&1 &
-chromium --user-data-dir=${chromium_data_dir} --app=${url} >/dev/null 2>&1 &
-
-echo $! > ${pid_file}
+cd "${chromium_data_dir}"
+echo ${chromium_pid} > pid
 
 disown
 
