@@ -26,6 +26,8 @@ services:
       - PORT=8443
     volumes:
       - "./workspace:/workspace"
+    devices:
+      - "${DEVICE}:${DEVICE}"
 
     # ports:
     #   - 8443:8443

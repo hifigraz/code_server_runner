@@ -1,2 +1,2 @@
-muhammad-sammy.csharp
 auiworks.amvim
+DavidGomes.platformio-ide-cursor
