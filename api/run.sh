@@ -22,8 +22,9 @@ fi
 
 echo starting api
 while [ "${running}" -ne "0" ]; do
-  fastapi dev IVahit/scripts.py --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
+  fastapi dev grader/scripts.py --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
   echo restarting api
+  pip install .
   sleep 5
 done
 
