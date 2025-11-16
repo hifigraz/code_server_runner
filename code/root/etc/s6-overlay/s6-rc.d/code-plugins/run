@@ -6,7 +6,11 @@ echo INSTALLING PLUGINS
 chmod 777 /config/extensions
 
 for extension in  $(cat $(dirname $0)/extensions.txt); do
-  install-extension ${extension}
+  if (echo ${extension} | grep "^#"); then
+    echo SKIPPING ${extension}
+  else
+    install-extension ${extension}
+  fi
 done
 
 echo DONE INSTALLING PLUGINS

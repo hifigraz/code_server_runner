@@ -1,2 +1,3 @@
 blipk.csharp
-auiworks.amvim
+fernandoescolar.vscode-solution-explorer
+nromanov.dotrush
