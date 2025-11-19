@@ -14,8 +14,11 @@ stop_container() {
 }
 
 start_container() {
+  EXTENSION_FILE=./code/root/etc/s6-overlay/s6-rc.d/code-plugins/extensions.txt
   echo STARTING CONTAINER
+  echo auiworks.amvim >> ${EXTENSION_FILE}
   docker compose up --build -d
+  head -n -1 ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp ; mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
 }
 
 trap stop_container SIGTERM SIGINT
