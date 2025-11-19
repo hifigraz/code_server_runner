@@ -4,10 +4,16 @@ if [ "$(id -u)" -eq 1000 ]; then
   echo USER OK
   echo Installing package in VENV
   . /config/venv/bin activate
-  cd /config/workspace
   while true; do
     echo trying to install package
-    /config/venv/bin/pip install -e .[lint,test] && break
+    pyproject=$(find /config/workspace -name pyproject.toml)
+    if [ -f "${pyproject}" ]; then
+      echo trying to install ${pyproject}
+      cd $(dirname ${pyproject})
+      /config/venv/bin/pip install -e .[lint,test] && break
+    else
+      still no project found
+    fi
     sleep 10
     echo failed, retrying
   done
