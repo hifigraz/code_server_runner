@@ -69,10 +69,15 @@ for dir in ${user_data_dir}/*/; do
 done
 
 
+count=0
 echo Try opening url: ${url}
-while ( ! curl ${url} || curl ${url} | grep 404 ); do
+while ( ! curl ${url} >/dev/null 2>&1 || curl ${url} 2>&1 | grep 404 > /dev/null 2>&1); do
   sleep 1
   echo -n .
+  let count=count+1
+  if [ ${count} -gt 20 ] ; then
+    fail 10 code server still not reachable
+  fi
 done
 
 
