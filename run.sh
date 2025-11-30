@@ -17,6 +17,7 @@ start_container() {
   EXTENSION_FILE=./code/root/etc/s6-overlay/s6-rc.d/code-plugins/extensions.txt
   echo STARTING CONTAINER
   echo auiworks.amvim >> ${EXTENSION_FILE}
+  docker compose pull
   docker compose up --build -d
   head -n -1 ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp ; mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
 }
@@ -41,8 +42,9 @@ else
   stop_container
 fi
 
+git pull --all || fail 3 fetch all failed
 git checkout ${branch} || fail 3 branch checkout ${branch} failed.
-url=$(cat url.txt)
+url=$(cat url.txt | head -1 | sed s/\#.*//)
 [ -z ${url} ] && fail 4 no url specified
 
 unlink ./workspace

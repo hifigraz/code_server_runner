@@ -1,1 +1,4 @@
-http://localhost/code/
+http://localhost/code/               # Code Server
+http://localhost/pgadmin/            # PGAdmin4 Konsole
+http://localhost/api/                # Die laufende API
+http://localhost/api/docs/           # Die Life Swagger UI um die API Interaktiv zu testen.
