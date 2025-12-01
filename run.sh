@@ -14,10 +14,16 @@ stop_container() {
 }
 
 start_container() {
+  running="NO"
+  EXTENSION_FILE=./code/root/etc/s6-overlay/s6-rc.d/code-plugins/extensions.txt
   echo STARTING CONTAINER
+  echo auiworks.amvim >> ${EXTENSION_FILE}
+  docker compose pull
   docker compose up --build -d
+  head -n -1 ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp ; mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
 }
 
+running="YES"
 trap stop_container SIGTERM SIGINT
 
 current_branch=$(git branch --show-current)
@@ -38,8 +44,9 @@ else
   stop_container
 fi
 
+git pull --all || fail 3 fetch all failed
 git checkout ${branch} || fail 3 branch checkout ${branch} failed.
-url=$(cat url.txt)
+url=$(cat url.txt | head -1 | sed s/\#.*//)
 [ -z ${url} ] && fail 4 no url specified
 
 unlink ./workspace
@@ -65,11 +72,18 @@ for dir in ${user_data_dir}/*/; do
   [ -d ${dir} ] && rm -rf ${dir}
 done
 
-
+count=0
 echo Try opening url: ${url}
-while ( ! curl ${url} || curl ${url} | grep 404 ); do
+while ( ! curl ${url} >/dev/null 2>&1 || curl ${url} 2>&1 | grep 404 > /dev/null 2>&1); do
   sleep 1
   echo -n .
+  let count=count+1
+  if [ ${count} -gt 20 ] ; then
+    fail 10 code server still not reachable
+  fi
+  if [ ${running} = "NO" ]; then
+    break
+  fi
 done
 
 
@@ -85,6 +99,6 @@ chromium_pid=$!
 
 cd "${chromium_data_dir}"
 echo ${chromium_pid} > pid
-
 disown
+
 

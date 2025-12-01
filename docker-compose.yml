@@ -33,4 +33,21 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.code-router.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.code-router.rule=PathPrefix(`/code/`)"
+      - "traefik.http.middlewares.code-strip.stripprefix.prefixes=/code"
+      - "traefik.http.middlewares.code-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.code-router.middlewares=code-strip"
+
+  doc:
+    build: ./doc/
+    volumes:
+      - "./doc:/doc"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.doc-router.rule=PathPrefix(`/doc/`)"
+      - "traefik.http.middlewares.doc-strip.stripprefix.prefixes=/doc"
+      - "traefik.http.middlewares.doc-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.doc-router.middlewares=doc-strip"
+    
