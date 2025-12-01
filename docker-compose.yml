@@ -34,6 +34,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.code-router.rule=PathPrefix(`/code/`)"
+      - "traefik.http.middlewares.code-strip.stripprefix.prefixes=/code"
+      - "traefik.http.middlewares.code-strip.stripprefix.forceSlash=false"
 
   doc:
     build: ./doc/
@@ -45,3 +47,5 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.doc-router.rule=PathPrefix('/doc/')"
+      - "traefik.http.middlewares.doc-strip.stripprefix.prefixes=/doc"
+      - "traefik.http.middlewares.doc-strip.stripprefix.forceSlash=false"
