@@ -45,9 +45,12 @@ services:
       - "./doc:/doc"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
-      - PORT=8443
+      - PORT=8000
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.docs-router.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.doc-router.rule=PathPrefix(`/doc/`)"
+      - "traefik.http.middlewares.doc-strip.stripprefix.prefixes=/doc"
+      - "traefik.http.middlewares.doc-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.doc-router.middlewares=doc-strip"
     
