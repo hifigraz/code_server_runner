@@ -4,8 +4,6 @@ Ihnen wird von der Schule eine Entwicklungsumgebung in Form von Docker-Container
 
 Diese Entwicklungsumgebung stellt Ihnen folgende Komponenten zur Verfügung:
 
-
-
 - Ein Postgres RDBMS
 
 - Ein PGAdmin4 Verwaltungssoftware für Postgres
