@@ -87,18 +87,20 @@ while ( ! curl ${url} >/dev/null 2>&1 || curl ${url} 2>&1 | grep 404 > /dev/null
 done
 
 
-chromium_data_dir="${user_data_dir}$(uuidgen)/"
-pid_file="${chromium_data_dir}pid"
-echo chromedir "${chromium_data_dir}"
-echo pid file  "${pid_file}"
-mkdir -p ${chromium_data_dir}
+if [ -z "${SKIP_CHROMIUM}" ] ; then
+  chromium_data_dir="${user_data_dir}$(uuidgen)/"
+  pid_file="${chromium_data_dir}pid"
+  echo chromedir "${chromium_data_dir}"
+  echo pid file  "${pid_file}"
+  mkdir -p ${chromium_data_dir}
+  
+  echo chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
+  chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
+  chromium_pid=$!
+  
+  cd "${chromium_data_dir}"
+  echo ${chromium_pid} > pid
+  disown
+fi 
 
-echo chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
-chromium --user-data-dir=${chromium_data_dir}data --app=${url} >/dev/null 2>&1 &
-chromium_pid=$!
-
-cd "${chromium_data_dir}"
-echo ${chromium_pid} > pid
-
-disown
 
