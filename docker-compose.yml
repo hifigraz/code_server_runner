@@ -33,4 +33,15 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.code-router.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.code-router.rule=PathPrefix(`/code/`)"
+
+  doc:
+    build: ./doc/
+    volumes:
+      - "./doc:/doc"
+    restart: unless-stopped
+    environment:
+      - PORT=8443
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.doc-router.rule=PathPrefix('/doc/')"

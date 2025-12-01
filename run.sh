@@ -14,6 +14,7 @@ stop_container() {
 }
 
 start_container() {
+  running="NO"
   EXTENSION_FILE=./code/root/etc/s6-overlay/s6-rc.d/code-plugins/extensions.txt
   echo STARTING CONTAINER
   echo auiworks.amvim >> ${EXTENSION_FILE}
@@ -21,6 +22,7 @@ start_container() {
   head -n -1 ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp ; mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
 }
 
+running="YES"
 trap stop_container SIGTERM SIGINT
 
 current_branch=$(git branch --show-current)
@@ -73,6 +75,9 @@ echo Try opening url: ${url}
 while ( ! curl ${url} || curl ${url} | grep 404 ); do
   sleep 1
   echo -n .
+  if [ ${running} = "NO" ]; then
+    break
+  fi
 done
 
 
