@@ -1,0 +1,8 @@
+site_name: Development Container
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - PowerShell
+  locale: de
