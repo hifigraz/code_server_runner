@@ -44,10 +44,6 @@ services:
     volumes:
       - "./doc:/doc"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    environment:
-      - PORT=8000
-    # ports:
-    #   - 8000:8000
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
