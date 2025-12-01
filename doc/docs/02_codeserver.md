@@ -51,7 +51,7 @@ cd c:\Work\INSY\2526
 git clone https://github.com/hifigraz/code_server_runner
 cd code_server_runner
 git pull --all
-git checkout fullstak
+git checkout fullstack
 ```
 
 #### Updaten und Starten

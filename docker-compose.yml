@@ -71,16 +71,26 @@ services:
 
     volumes:
       - "./workspace/:/workspace"
-
     ports:
       - 8082:80
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api-router.rule=PathPrefix(`/api/`)"
       - "traefik.http.middlewares.api-strip.stripprefix.prefixes=/api"
       - "traefik.http.middlewares.api-strip.stripprefix.forceSlash=false"
       - "traefik.http.routers.api-router.middlewares=api-strip"
+
+  doc:
+    build: ./doc/
+    volumes:
+      - "./doc:/doc"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.doc-router.rule=PathPrefix(`/doc/`)"
+      - "traefik.http.middlewares.doc-strip.stripprefix.prefixes=/doc"
+      - "traefik.http.middlewares.doc-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.doc-router.middlewares=doc-strip"
 
 volumes:
   postgres:
