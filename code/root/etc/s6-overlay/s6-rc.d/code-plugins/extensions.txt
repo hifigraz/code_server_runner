@@ -1,2 +1,1 @@
-auiworks.amvim
 morningstart.python-ovsc
