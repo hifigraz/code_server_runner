@@ -174,6 +174,9 @@ switch_branch() {
   log_debug switching branch
   current_branch=$(git branch --show-current)
   if [ "${BRANCH}" != "${current_branch}" ]; then
+    unlink workspace
+    [ -e workspace_${BRANCH} ] || mkdir workspace_${BRANCH}
+    ln -s workspace_${BRANCH} workspace
     stop_container
     git checkout ${BRANCH} || fail 10 Switching branch failed
   fi
