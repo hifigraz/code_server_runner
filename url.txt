@@ -1,5 +1,6 @@
-http://localhost/code/               # Code Server
-http://localhost/pgadmin/            # PGAdmin4 Konsole
-http://localhost/api/                # Die laufende API
+http://localhost/                    # Dokuemenation der Arbeitsumgebung
+http://localhost/code/api/           # Code Server API
+http://localhost/code/front/         # Cose Server Frontend
 http://localhost/api/docs/           # Die Life Swagger UI um die API Interaktiv zu testen.
-http://localhost/doc/                # Dokuemenation der Arbeitsumgebung
+http://localhost/pgadmin/            # PGAdmin4 Konsole
+http://localhost/app/                # The frontend

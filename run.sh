@@ -158,15 +158,20 @@ stop_container() {
 }
 
 start_container() {
-  EXTENSION_FILE=./code/root/etc/s6-overlay/s6-rc.d/code-plugins/extensions.txt
   log_debug building build and start 
-  if [ "${VIM}" = "yes" ]; then
-    echo auiworks.amvim >> ${EXTENSION_FILE}
-  fi
+  for EXTENSION_FILE in $(find . -name extensions.txt); do 
+    if [ "${VIM}" = "yes" ]; then
+      echo auiworks.amvim >> ${EXTENSION_FILE}
+    fi
+  done
+  
   docker compose up --build -d
   log_debug is up, unpatching extension file
-  grep -v auiworks.amvim ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp 
-  mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
+  
+  for EXTENSION_FILE in $(find . -name extensions.txt); do 
+    grep -v auiworks.amvim ${EXTENSION_FILE} > ${EXTENSION_FILE}.tmp 
+    mv ${EXTENSION_FILE}.tmp ${EXTENSION_FILE}
+  done
   log_debug start finished
 }
 
@@ -188,26 +193,32 @@ follow_logs() {
 }
 
 start_browser() {
-  url=$(head -n 1 url.txt | sed s/#.*//)
-  count=0
-  log_info Try opening url: ${url}
-  while ( ! curl ${url} >/dev/null 2>&1 || curl ${url} 2>&1 | grep 404 > /dev/null 2>&1); do
+  stop_browser
+  cat url.txt | while IFS= read -r raw_url; do
+    url=$(echo ${raw_url} | sed s/\ *#.*//)
+    [ -z "${url}" ] && continue
+    count=0
+    log_info Try opening url: ${raw_url}
+    while ( ! curl --retry 5 --retry-all-errors ${url} >/dev/null 2>&1 || curl ${url} 2>&1 | grep 404 > /dev/null 2>&1); do
+      sleep 1
+      echo -n . >&2
+      let count=count+1
+      if [ ${count} -gt 20 ] ; then
+        fail 30 noread: ${raw_url} 
+      fi
+      if [ ! ${RUNNING} ]; then
+        break
+      fi
+    done
     sleep 1
-    echo -n . >&2
-    let count=count+1
-    if [ ${count} -gt 20 ] ; then
-      fail 30 code server still not reachable
-    fi
-    if [ ! ${RUNNING} ]; then
-      break
-    fi
+    chromium --user-data-dir=${CHROMIUM_DIR}/data --app=${url} >/dev/null 2>&1 &
+    [ -e ${CHROMIUM_DIR}/pid ] || echo $! > ${CHROMIUM_DIR}/pid
   done
-  chromium --user-data-dir=${CHROMIUM_DIR}/data --app=${url} >/dev/null 2>&1 &
-  echo $! > ${CHROMIUM_DIR}/pid
 }
 
 stop_browser() {
-  kill $(cat ${CHROMIUM_DIR}/pid)
+  [ -e ${CHROMIUM_DIR}/pid ] && kill $(cat ${CHROMIUM_DIR}/pid)
+  [ -e ${CHROMIUM_DIR}/pid ] && rm ${CHROMIUM_DIR}/pid
 }
 
 main $*

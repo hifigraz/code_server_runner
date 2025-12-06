@@ -18,8 +18,22 @@ Es steht Ihnen frei, diese oder adäquate andere Komponenten direkt auf Ihrer Ha
 
 ## Gliederung
 
-## 1. [Generelle Tipps](01_tipps.md)
+### 1. [Generelle Tipps](01_tipps.md)
 
-## 2. [Verwaltung Code Server](02_codeserver.md)
+### 2. [Verwaltung Code Server](02_codeserver.md)
 
-## 3. [Workpackage Verwaltung](03_workpackage.md)
+### 3. [Workpackage Verwaltung](03_workpackage.md)
+
+## Links
+
+Die folgenden Links werden von diesem Container zur Verfügung gestellt:
+
+<a href="/app/" target="_blank">Die Webapplikation</a>
+
+<a href="/code/front/?folder=/workspace/" target="_blank">Code Server für das Frontend</a>
+
+<a href="/code/api/?folder=/workspace/" target="_blank">Code Server für das Backend</a>
+
+<a href="/pgadmin/" target="_blank">Database Management</a>
+
+<a href="/api/docs/" target="_blank">Swagger UI der Api</a>

@@ -24,7 +24,7 @@ services:
       - postgres:/var/lib/postgresql/data
 
   pgadmin4:
-    image: elestio/pgadmin:REL-9_8
+    image: dpage/pgadmin4:9
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
@@ -42,14 +42,14 @@ services:
       - traefik.http.services.pgadmin.loadbalancer.server.port=80
       - traefik.http.routers.pgadmin.rule=(Host(`localhost`) && PathPrefix(`/pgadmin`))
 
-  code:
-    build: ./code/
+  code_api:
+    build: ./code_api
     environment:
       - DOCKER_MODS=
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Vienna
-      - SUDO_PASSWORD=password #optional
+      - SUDO_PASSWORD=Kennwort1 #optional
       - DEFAULT_WORKSPACE=/workspace #optional
       - PORT=8443
     volumes:
@@ -61,10 +61,34 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.code-router.rule=PathPrefix(`/code/`)"
-      - "traefik.http.middlewares.code-strip.stripprefix.prefixes=/code"
-      - "traefik.http.middlewares.code-strip.stripprefix.forceSlash=false"
-      - "traefik.http.routers.code-router.middlewares=code-strip"
+      - "traefik.http.routers.code_api-router.rule=PathPrefix(`/code/api`)"
+      - "traefik.http.middlewares.code_api-strip.stripprefix.prefixes=/code/api"
+      - "traefik.http.middlewares.code_api-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.code_api-router.middlewares=code_api-strip"
+
+  code_front:
+    build: ./code_front
+    environment:
+      - DOCKER_MODS=
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vienna
+      - SUDO_PASSWORD=Kennwort1 #optional
+      - DEFAULT_WORKSPACE=/workspace #optional
+      - PORT=8443
+    volumes:
+      - "./workspace:/workspace"
+
+    # ports:
+    #   - 8443:8443
+    restart: unless-stopped
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.code_front-router.rule=PathPrefix(`/code/front`)"
+      - "traefik.http.middlewares.code_front-strip.stripprefix.prefixes=/code/front"
+      - "traefik.http.middlewares.code_front-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.code_front-router.middlewares=code_front-strip"
 
   api:
     build: ./api/
@@ -91,6 +115,20 @@ services:
       - "traefik.http.middlewares.doc-strip.stripprefix.prefixes=/doc"
       - "traefik.http.middlewares.doc-strip.stripprefix.forceSlash=false"
       - "traefik.http.routers.doc-router.middlewares=doc-strip"
+      - "traefik.http.routers.doc-router-root.rule=Path(`/`)"
+      - "traefik.http.middlewares.root-redirect-root.redirectregex.regex=/$$"
+      - "traefik.http.middlewares.root-redirect-root.redirectregex.replacement=/doc/"
+      - "traefik.http.routers.doc-router-root.middlewares=root-redirect-root"
+
+  app:
+    build: ./app/
+    volumes:
+      - "./workspace/:/workspace"
+    ports:
+      - 8083:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-router.rule=PathPrefix(`/app/`)"
 
 volumes:
   postgres:
