@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
-
+API_WORKSPACE_LINK="/config/workspace/api"
+if [ ! -e "${API_WORKSPACE_LINK}" ]; then
+  echo creating dummy API Workspace folder ${API_WORKSPACE_LINK}
+  mkdir "${API_WORKSPACE_LINK}"
+  echo Clone api repository to /config/workspace/ >> "${API_WORKSPACE_LINK}/README.md"
+fi
 if [ "$(id -u)" -eq 1000 ]; then
   echo USER OK
   echo Installing package in VENV
@@ -9,6 +14,10 @@ if [ "$(id -u)" -eq 1000 ]; then
     pyproject=$(find /config/workspace -name pyproject.toml)
     if [ -f "${pyproject}" ]; then
       echo trying to install ${pyproject}
+      rm -rf "${API_WORKSPACE_LINK}"
+      echo trying to link
+      echo ln -s -f "$(basename ${pyproject})" "${API_WORKSPACE_LINK}"
+      ln -s "$(basename $(dirname ${pyproject}))" "${API_WORKSPACE_LINK}"
       cd $(dirname ${pyproject})
       /config/venv/bin/pip install -e .[lint,test] && break
     else

@@ -32,7 +32,7 @@ Die folgenden Links werden von diesem Container zur Verfügung gestellt:
 
 <a href="/code/front/?folder=/workspace/" target="_blank">Code Server für das Frontend</a>
 
-<a href="/code/api/?folder=/workspace/" target="_blank">Code Server für das Backend</a>
+<a href="/code/api/?folder=/workspace/api/" target="_blank">Code Server für das Backend</a>
 
 <a href="/pgadmin/" target="_blank">Database Management</a>
 
