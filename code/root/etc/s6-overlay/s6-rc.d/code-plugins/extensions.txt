@@ -1,1 +1,2 @@
 pioarduino.pioarduino-ide
+carlocardella.hogwarts-colors-dark

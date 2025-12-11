@@ -21,7 +21,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Vienna
-      - SUDO_PASSWORD=password #optional
+      - SUDO_PASSWORD=Kennwort1 #optional
       - DEFAULT_WORKSPACE=/workspace #optional
       - PORT=8443
     volumes:
@@ -29,10 +29,11 @@ services:
     devices:
       - "${DEVICE}:${DEVICE}"
 
-    # ports:
-    #   - 8443:8443
     restart: unless-stopped
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.code-router.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.code-router.rule=PathPrefix(`/code/`)"
+      - "traefik.http.middlewares.code-strip.stripprefix.prefixes=/code"
+      - "traefik.http.middlewares.code-strip.stripprefix.forceSlash=false"
+      - "traefik.http.routers.code-router.middlewares=code-strip"
