@@ -1,2 +1,1 @@
-auiworks.amvim
-DavidGomes.platformio-ide-cursor
+pioarduino.pioarduino-ide
