@@ -4,7 +4,7 @@ if [ ! -e "${API_WORKSPACE_LINK}" ]; then
   echo creating dummy API Workspace folder ${API_WORKSPACE_LINK}
   mkdir "${API_WORKSPACE_LINK}"
   echo Clone api repository to /config/workspace/ >> "${API_WORKSPACE_LINK}/README.md"
-  chown -R abc:abc ${API_WORKSPACE_LINK}
+  chown -R abc:abc "${API_WORKSPACE_LINK}"
 fi
 if [ "$(id -u)" -eq 1000 ]; then
   echo USER OK
