@@ -30,6 +30,9 @@ services:
       - "${DEVICE}:${DEVICE}"
 
     restart: unless-stopped
+    ports:
+      - "8008"
+      - "8443"
 
     labels:
       - "traefik.enable=true"
@@ -37,3 +40,4 @@ services:
       - "traefik.http.middlewares.code-strip.stripprefix.prefixes=/code"
       - "traefik.http.middlewares.code-strip.stripprefix.forceSlash=false"
       - "traefik.http.routers.code-router.middlewares=code-strip"
+      - "traefik.http.services.code.loadbalancer.server.port=8443"
