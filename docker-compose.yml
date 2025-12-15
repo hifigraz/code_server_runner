@@ -94,7 +94,7 @@ services:
     build: ./api/
 
     volumes:
-      - "./workspace/:/workspace"
+      - "./workspace/:/workspace_ro:ro"
     ports:
       - 8082:80
     labels:
