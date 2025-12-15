@@ -1,3 +1,4 @@
 pioarduino.pioarduino-ide
-KylinIdeTeam.kylin-clangd
 lintangwisesa.arduino
+KylinIdeTeam.kylin-clangd
+KylinIdeTeam.kylin-cmake-tools
