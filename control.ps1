@@ -53,6 +53,7 @@ try {
 }
 catch {
   Write-Error "Fehler: $_"
+  Write-Error "Docker Desktop Running"
     exit 1
 }
 
