@@ -19,7 +19,7 @@ linkFiles() {
   cd $1
   while [ "0" -ne "${running}" ]; do
     mkdir -p /workspace/
-    for i in $(ls -A /$1 | grep -v egg-info); do
+    for i in $(ls -A /$1 | grep -v egg-info | grep -v "^build$"); do
       if [ -e /workspace/${i} ]; then
         log skipping file $1/$i
       else
@@ -60,20 +60,20 @@ done
   
 cd /workspace
 
-if [ "${running}" -ne "0" ] && [ -e "pyproject.toml" ]; then
-  log installing package
-  pip install .
-fi
-
 echo starting api
 while [ "${running}" -ne "0" ]; do
-  log files $(ls /workspace/)
-  find -L -name scripts.py | grep -v ^./build
+  if [ -e "pyproject.toml" ]; then
+    log installing package
+    pip install .
 
-  script_name="$(find -L -name scripts.py |grep -v ^./build)"
-  echo "Script ${script_name}"
+    log files $(ls /workspace/)
+    find -L -name scripts.py | grep -v ^./build
 
-  fastapi dev ${script_name} --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
+    script_name="$(find -L -name scripts.py |grep -v ^./build)"
+    echo "Script ${script_name}"
+
+    fastapi dev ${script_name} --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
+  fi
   echo restarting api
   sleep 5
 done
