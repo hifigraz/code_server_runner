@@ -42,7 +42,7 @@ try {
       }
       if ($count -gt 10) {
         Write-Error "Giving up"
-          exit 1
+        exit 1
       }
     }
 
@@ -54,7 +54,7 @@ try {
 catch {
   Write-Error "Fehler: $_"
   Write-Error "Docker Desktop Running"
-    exit 1
+  exit 1
 }
 
 
