@@ -20,9 +20,7 @@ linkFiles() {
   while [ "0" -ne "${running}" ]; do
     mkdir -p /workspace/
     for i in $(ls -A /$1 | grep -v egg-info | grep -v "^build$"); do
-      if [ -e /workspace/${i} ]; then
-        log skipping file $1/$i
-      else
+      if [ ! -e /workspace/${i} ]; then
         log "linkFile $1/$i -> /workspace/$i"
         ln -s $1/$i /workspace/$i
       fi
