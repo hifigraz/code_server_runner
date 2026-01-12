@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-
 log() {
   echo LOG $* >&2
 }
@@ -32,7 +31,7 @@ linkFiles() {
 stop_server() {
   running=0
 }
-trap stop_server TERM 
+trap stop_server TERM
 
 getWorkDir() {
   log getWorkDir looking for pyproject.toml
@@ -55,7 +54,7 @@ while [ "${running}" -ne "0" ]; do
   log waiting for project
   sleep 5
 done
-  
+
 cd /workspace
 
 echo starting api
@@ -65,14 +64,14 @@ while [ "${running}" -ne "0" ]; do
     pip install .
 
     log files $(ls /workspace/)
-    find -L -name scripts.py | grep -v ^./build
+    find -L -name scripts.py -o -name main.py | grep -v ^./build | grep -v env
+    script_name="$(find -L -name scripts.py -o -name main.py | grep -v ^./build | grep -v env)"
 
-    script_name="$(find -L -name scripts.py |grep -v ^./build)"
     echo "Script ${script_name}"
+    cd $(dirname ${script_name})
 
-    fastapi dev ${script_name} --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
+    fastapi dev $(basename ${script_name}) --host 0.0.0.0 --port 80 --proxy-headers --root-path /api
   fi
   echo restarting api
   sleep 5
 done
-
