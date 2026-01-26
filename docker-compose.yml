@@ -20,6 +20,8 @@ services:
     environment:
       POSTGRES_PASSWORD: Kennwort1
       POSTGRES_USER: admin
+    ports:
+      - 5432:5432
     volumes:
       - postgres:/var/lib/postgresql/data
 
